@@ -1,45 +1,54 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System;
+
 
 public class BallControll : MonoBehaviour
 {
-    //[SerializeField] private GameObject scriptableObject;
+    //private DifficultyLevelData speedData;
+    [SerializeField] private GameEvent OnCollision;
 
-    private int speedBall;
-    private bool isPressedButtonUp = false;
 
-    public bool IsPressedButtonUp
-    {
-        get{ return isPressedButtonUp; }
-        set { isPressedButtonUp = value;}
-    }
-    public int SpeedBall
-    {
-        get { return speedBall; }
-        set { speedBall = value; }
-    }
+    public static Action<GameObject> OnBallOver;
+    //private DifficultyLevelData setSpeedSetting;
 
+    private float speedBall;
     private Rigidbody2D ballRigidbody;
+    private Vector2 ballStartPosition = new Vector2(-5f, 1.8f);
 
     void Start()
     {
         ballRigidbody = GetComponent<Rigidbody2D>();
+        //FlyToDown();
+    }
+  
+    public void Init(DifficultyLevelData setSpeed)
+    {
+        speedBall = setSpeed.BallSpeed;
+
+        Debug.Log("speedBall: " + speedBall);
     }
 
-    // Update is called once per frame
-    void Update()
+    public void FlyToTop()
     {
-        if (!transform.parent.GetComponent<GameManager>().GameOver)
-        {
-            if (IsPressedButtonUp)
-            {
-                ballRigidbody.velocity = Vector3.up * speedBall;
-            }
-            else
-            {
-                ballRigidbody.velocity = Vector3.up * -speedBall;
-            }
-        }
+        ballRigidbody.velocity = Vector3.up * speedBall;
+    }
+    public void FlyToDown()
+    {
+        ballRigidbody.velocity = Vector3.up * -speedBall;
+    }
+    public void AddInQueue()
+    {
+        OnBallOver(gameObject);
+    }
+    private void OnTriggerEnter2D(Collider2D col)
+    {
+        OnCollision.Raise(); // Event from game over
+
+        OnBallOver(gameObject); // в очередь
+        gameObject.transform.position = ballStartPosition;
+        gameObject.SetActive(false);
+        //Destroy(gameObject);
     }
 }

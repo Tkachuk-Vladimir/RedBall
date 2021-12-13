@@ -1,78 +1,35 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System;
 
 public class ObstacleControll : MonoBehaviour
 {
-    [SerializeField] private float startSpeedObstacle;
-    [SerializeField] private float addSpeed;
-    [SerializeField] private float timerIncreaseSpeed;
-    [SerializeField] private float timer;
-
     private float speedObstacle;
-    private bool setCombatPosition;
+    public static Action<GameObject> OnObstacleOver;
 
-    public bool SetCombatPosition
+    public float SpeedObstacle
     {
-        get { return setCombatPosition; }
-        set { setCombatPosition = value; }
+        get { return speedObstacle; }
+        set { speedObstacle = value; }
     }
 
-    private void Start()
-    {
-        //set start speed
-        speedObstacle = startSpeedObstacle;
-
-        setCombatPosition = false;
-    }
-
-    // Update is called once per frame
     void Update()
     {
-        if (transform.parent.transform.parent.GetComponent<GameManager>().GameOver)
-        {
-            //set start speed
-            speedObstacle = startSpeedObstacle;
+        //movoment obstacle if setCombatPosition
+        MovementObsacle();
 
-            timer = 0;
-        }
-        else
+        // когда выходит за предел камеры,с помощью события запрашиваем возврат на обратно в пул
+        if(transform.position.x < -10 && OnObstacleOver != null)
+        //if (transform.position.x < -10)
         {
-            // Increase speed ewery N second;
-            IncreaseSpeed();
-
-            //movoment obstacle if setCombatPosition
-            MovementObsacle();
+            OnObstacleOver(gameObject);
+            gameObject.SetActive(false);
         }
     }
+
     private void MovementObsacle()
     {
-        if (setCombatPosition)
-        {
-            transform.Translate(Vector3.right * -speedObstacle * Time.deltaTime);
-        }
-        
-    }
-
-    private void OnTriggerEnter2D(Collider2D collision)
-    {
-        if (collision.gameObject.CompareTag("Ball"))
-        {
-            // switch gameOver
-            transform.parent.transform.parent.GetComponent<GameManager>().GameOver = true;
-            // destroy ball
-            transform.parent.transform.parent.GetComponent<GameManager>().DestroyBall();
-        }
-    }
-    private void IncreaseSpeed()
-    {
-        timer += Time.deltaTime;
-        //Debug.Log(timer);
-        if (timer >= timerIncreaseSpeed)
-        {
-            speedObstacle += addSpeed;
-            timer = 0f;
-            //Debug.Log(speedLine);
-        }
+       transform.Translate(Vector3.right * -speedObstacle * Time.deltaTime);
     }
 }
