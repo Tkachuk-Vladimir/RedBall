@@ -8,6 +8,7 @@ public class SetLevelSettings : MonoBehaviour
    [SerializeField] private List<DifficultyLevelData> difficultyLevel;
    [SerializeField] private PoolObstacle poolObstacle;
    [SerializeField] private BallManager ballManager;
+
    [SerializeField] private GameObject startButton;
    [SerializeField] private GameObject startButtonf;
 

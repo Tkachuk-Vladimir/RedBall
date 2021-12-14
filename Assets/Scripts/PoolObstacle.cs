@@ -106,7 +106,7 @@ public class PoolObstacle : PoolCreate
                 var obstacle = currentObstacles.Dequeue();
                 var script = poolObstacles[obstacle]; // get obstacle script
                 script.SpeedObstacle = speedObstacle; // set curren speed
-                float yPos = Random.Range(-1.8f, 2.7f); //Генерация случайного места появления по высоте Y
+                float yPos = Random.Range(-1.8f, 2.1f); //Генерация случайного места появления по высоте Y
                 obstacle.transform.position = new Vector2(transform.position.x, yPos);
                 obstacle.SetActive(true);
             }
